@@ -1,0 +1,187 @@
+﻿<UserControl x:Class="ClaimReserveApp.UI.Views.ReserveSummaryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ClaimReserveApp.UI.Views"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             xmlns:dal="clr-namespace:ClaimReserveApp.DAL;assembly=ClaimReserveApp.DAL"
+             xmlns:val="clr-namespace:ClaimReserveApp.UI.Validator"
+             xmlns:controls="clr-namespace:ClaimReserveApp.UI.Controls"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="GroupedClaimSummary" Source="{Binding Position, ValidatesOnDataErrors=True}">
+            <CollectionViewSource.GroupDescriptions>
+                <PropertyGroupDescription
+                PropertyName="ProductName" />
+            </CollectionViewSource.GroupDescriptions>
+        </CollectionViewSource>
+    </UserControl.Resources>
+
+    <Grid RenderTransformOrigin="0.5,0.5">
+        <Grid.RowDefinitions>
+            <RowDefinition MinHeight="20"  ></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" HorizontalAlignment="Center">
+            <Button Name="ClaimResevedButton" Command="{Binding LocateCSVFileCommand}"  Template="{StaticResource LoadButtonTemplate}" Cursor="Hand" Background="Black">Load Claim Reserve file</Button>
+        </StackPanel>
+
+        <Grid  Grid.Row="1" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"
+                              MinWidth="650" MaxWidth="650" />
+                <ColumnDefinition Width="Auto"  />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Region -->
+            <Border Grid.Column="0"
+                BorderBrush="#FF4355C1"
+                BorderThickness="2,2,2,2"
+                CornerRadius="4,4,4,4"
+                Margin="8,2,2,8">
+                <Grid MaxWidth="640">
+                    <DataGrid x:Name="ClaimReserve" ItemsSource="{Binding Source={StaticResource GroupedClaimSummary}}" AutoGenerateColumns="False" CanUserAddRows="False">
+                        <DataGrid.RowValidationRules>
+                            <val:ProductValidationRule ValidationStep="ConvertedProposedValue" ></val:ProductValidationRule>
+                        </DataGrid.RowValidationRules>
+                        <DataGrid.RowValidationErrorTemplate>
+                            <ControlTemplate>
+                                <Grid Margin="0,-2,0,-2" ToolTip="{Binding RelativeSource={RelativeSource
+                                      FindAncestor, AncestorType={x:Type DataGridRow}},
+                                     Path=(Validation.Errors)[0].ErrorContent}">
+                                    <Ellipse StrokeThickness="0" Fill="Red" 
+                                             Width="{TemplateBinding FontSize}" 
+                                             Height="{TemplateBinding FontSize}" />
+                                    <TextBlock Text="!" FontSize="{TemplateBinding FontSize}" 
+                                               FontWeight="Bold" Foreground="White" 
+                                               HorizontalAlignment="Center"  />
+                                </Grid>
+                            </ControlTemplate>
+                        </DataGrid.RowValidationErrorTemplate>
+
+                        <DataGrid.ColumnHeaderStyle >
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="FontSize" Value="16"/>
+                                <Setter Property="Background" Value="LightGray"></Setter>
+                                <Setter Property="FontWeight" Value="Bold"></Setter>
+                                <Setter Property="Height" Value="30"></Setter>
+                                <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                                <Setter Property="BorderBrush" Value="Azure"></Setter>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn  Width="150"  SortMemberPath="ProductName" Header="Product Name">
+                                <DataGridTemplateColumn.CellTemplate >
+                                    <DataTemplate >
+                                        <TextBox Text="{Binding ProductName}" HorizontalAlignment="Stretch"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Width="140"  SortMemberPath="OriginYear" Header="Origin Year">
+                                <DataGridTemplateColumn.CellTemplate >
+                                    <DataTemplate >
+                                        <TextBox Text="{Binding OriginYear}" HorizontalAlignment="Stretch"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Width="150"  SortMemberPath="DevelopmentYear"  Header="Development Year">
+                                <DataGridTemplateColumn.CellTemplate  >
+                                    <DataTemplate >
+                                        <TextBox Text="{Binding DevelopmentYear}" HorizontalAlignment="Stretch"></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn MinWidth="125"  SortMemberPath="IncreamentValue"  Header="Increament Value" CanUserSort="true" >
+                                <DataGridTemplateColumn.CellTemplate  >
+                                    <DataTemplate >
+                                        <TextBox Text="{Binding IncreamentValue}" HorizontalAlignment="Stretch" ></TextBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                        </DataGrid.Columns>
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Foreground" Value="Black" />
+                                <Setter Property="Background" Value="White" />
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.GroupStyle>
+                            <GroupStyle>
+                                <GroupStyle.ContainerStyle>
+                                    <Style TargetType="{x:Type GroupItem}">
+                                        <Setter Property="Margin" Value="0,0,0,5"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type GroupItem}" >
+                                                    <Expander IsExpanded="True"  BorderThickness="1,1,1,5">
+                                                        <Expander.Resources>
+                                                            <Style TargetType="{x:Type TextBlock}">
+                                                                <Setter Property="Foreground" Value="Black" />
+                                                            </Style>
+                                                        </Expander.Resources>
+                                                        <Expander.Header >
+                                                            <DockPanel>
+                                                                <TextBlock Text="Product Name : "/>
+                                                                <TextBlock FontWeight="Bold" Text="{Binding Path=Items[0].ProductName}" Width="80"/>
+                                                                <TextBlock Text="Product Count: "/>
+                                                                <TextBlock FontWeight="Bold" Text="{Binding Path=ItemCount}"/>
+                                                            </DockPanel>
+                                                        </Expander.Header>
+                                                        <Expander.Content >
+                                                            <Grid>
+                                                                <Rectangle Stroke="GreenYellow" Fill="LightBlue"/>
+                                                                <ItemsPresenter Margin="5,5,5,5"   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                            </Grid>
+                                                        </Expander.Content>
+                                                    </Expander>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </GroupStyle.ContainerStyle>
+                            </GroupStyle>
+                        </DataGrid.GroupStyle>
+
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding ClickCommand}" 
+                            CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </DataGrid>
+
+                </Grid>
+            </Border>
+
+            <!-- Main Region -->
+            <Border Margin="2,2,8,8"
+                Grid.Column="2"
+                BorderThickness="2,2,2,2"
+                CornerRadius="4,4,4,4"
+                BorderBrush="#FF4355C1"
+                Grid.RowSpan="2">
+                <ContentControl x:Name="Definition"
+                            prism:RegionManager.RegionName="ActionRegion"
+                            VerticalContentAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch" />
+            </Border>
+
+            <GridSplitter Grid.Row="1"
+                      Grid.Column="1"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Stretch"
+                      Background="{x:Null}"
+                      Grid.RowSpan="2" />
+        </Grid>
+
+    </Grid>
+</UserControl>

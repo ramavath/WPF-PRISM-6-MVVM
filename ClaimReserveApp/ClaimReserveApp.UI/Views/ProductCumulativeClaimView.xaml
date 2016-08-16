@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="ClaimReserveApp.UI.Views.ProductCumulativeClaimView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ClaimReserveApp.UI.Views"
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True">
+    <!--<Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+         Left Region 
+        <Border Grid.Column="0"
+                BorderBrush="#FF4355C1"
+                BorderThickness="2,2,2,2"
+                CornerRadius="4,4,4,4"
+                Margin="8,2,2,8">
+            <Grid MaxWidth="540">
+
+                <TextBlock Text="Treeview of Product"></TextBlock>
+            </Grid>
+        </Border>
+
+         Main Region 
+        <Border Margin="2,2,8,8"
+                Grid.Column="2"
+                BorderThickness="2,2,2,2"
+                CornerRadius="4,4,4,4"
+                BorderBrush="#FF4355C1"
+                Grid.RowSpan="2">
+            <Grid>
+                <TextBlock Text="ProductClaim"></TextBlock>
+            </Grid>
+
+        </Border>
+
+        <GridSplitter Grid.Row="1"
+                      Grid.Column="1"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Stretch"
+                      Background="{x:Null}"
+                      Grid.RowSpan="2" />
+    </Grid>-->
+</UserControl>
